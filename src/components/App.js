@@ -1,5 +1,7 @@
 import React from "react";
 
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
@@ -8,6 +10,9 @@ import ImagePopup from "./ImagePopup";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
+
+import Login from "./Login";
+import Register from "./Register";
 
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { CurrentCardContext } from "../contexts/CurrentCardContext";
@@ -158,51 +163,63 @@ function App() {
   }
 
   return (
-    <CurrentUserContext.Provider value={currentUser}>
-      <CurrentCardContext.Provider value={cards}>
-        <div className="page">
-          <div className="container">
-            <Header />
+    <BrowserRouter>
+      <CurrentUserContext.Provider value={currentUser}>
+        <CurrentCardContext.Provider value={cards}>
+          <div className="page">
+            <div className="container">
+              <Header />
+              <Switch>
+                <Route exact path="/">
+                  <Main
+                    onEditProfile={handleEditProfileClick}
+                    onAddPlace={handleAddPlaceClick}
+                    onEditAvatar={handleEditAvatarClick}
+                    onCardClick={handleCardClick}
+                    onCardLike={handleCardLike}
+                    onTrashClick={handleCardDelete}
+                    cards={cards}
+                  />
+                  <Footer />
+                </Route>
+                <Route path="/sign-up">
+                  <Register />
+                </Route>
+                <Route path="/sign-in">
+                  <Login />
+                </Route>
+              </Switch>
 
-            <Main
-              onEditProfile={handleEditProfileClick}
-              onAddPlace={handleAddPlaceClick}
-              onEditAvatar={handleEditAvatarClick}
-              onCardClick={handleCardClick}
-              onCardLike={handleCardLike}
-              onTrashClick={handleCardDelete}
-              cards={cards}
-            />
 
-            <Footer />
 
-            <ImagePopup
-              card={selectedCard}
-              onClose={closeAllPopups}
-            />
+              <ImagePopup
+                card={selectedCard}
+                onClose={closeAllPopups}
+              />
 
-            <EditProfilePopup
-              isOpen={isEditProfilePopupOpen}
-              onClose={closeAllPopups}
-              onUpdateUser={handleUpdateUser}
-            />
+              <EditProfilePopup
+                isOpen={isEditProfilePopupOpen}
+                onClose={closeAllPopups}
+                onUpdateUser={handleUpdateUser}
+              />
 
-            <EditAvatarPopup
-              isOpen={isEditAvatarPopupOpen}
-              onClose={closeAllPopups}
-              onUpdateAvatar={handleUpdateAvatar}
-            />
+              <EditAvatarPopup
+                isOpen={isEditAvatarPopupOpen}
+                onClose={closeAllPopups}
+                onUpdateAvatar={handleUpdateAvatar}
+              />
 
-            <AddPlacePopup
-              isOpen={isAddPlacePopupOpen}
-              onClose={closeAllPopups}
-              onAddPlace={handleAddPlace}
-            />
+              <AddPlacePopup
+                isOpen={isAddPlacePopupOpen}
+                onClose={closeAllPopups}
+                onAddPlace={handleAddPlace}
+              />
 
+            </div>
           </div>
-        </div>
-      </CurrentCardContext.Provider>
-    </CurrentUserContext.Provider>
+        </CurrentCardContext.Provider>
+      </CurrentUserContext.Provider>
+    </BrowserRouter>
   );
 }
 
