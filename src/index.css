@@ -33,12 +33,14 @@
 @import url('../src/blocks/popup/_type/popup_type_picture.css');
 @import url('../src/blocks/popup/_type/popup_type_delete-card.css');
 @import url('../src/blocks/popup/_type/popup_type_edit-avatar.css');
+@import url('../src/blocks/popup/_type/popup_type_registration.css');
 @import url('../src/blocks/popup/_opened/popup_opened.css');
 @import url('../src/blocks/popup/__exit/popup__exit.css');
 @import url('../src/blocks/popup/__exit/_type/popup__exit_type_picture.css');
 @import url('../src/blocks/popup/__container/popup__container.css');
 @import url('../src/blocks/popup/__title/popup__title.css');
 @import url('../src/blocks/popup/__title/_type/popup__title_type_delete.css');
+@import url('../src/blocks/popup/__title/_type/popup__title_type_registration.css');
 @import url('../src/blocks/popup/__input/popup__input.css');
 @import url('../src/blocks/popup/__input/_type/popup__input_type_error.css');
 @import url('../src/blocks/popup/__submit-btn/popup__submit-btn.css');
@@ -125,4 +127,11 @@
   .sign__container {
     width: 260px;
   }
+}
+
+
+.popup__registration-img {
+  width: 120px;
+  height: 120px;
+  padding: 60px 0 0;
 }

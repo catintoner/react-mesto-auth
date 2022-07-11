@@ -13,6 +13,7 @@ import AddPlacePopup from "./AddPlacePopup";
 
 import Login from "./Login";
 import Register from "./Register";
+import InfoTooltip from "./InfoTooltip";
 
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { CurrentCardContext } from "../contexts/CurrentCardContext";
@@ -24,6 +25,7 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
+  const [isRegistrationPopupOpen, setIsRegistrationPopupOpen] = React.useState(true);
 
   const [selectedCard, setSelectedCard] = React.useState(null);
 
@@ -57,10 +59,15 @@ function App() {
     setIsEditProfilePopupOpen(true);
   }
 
+  function autoNotifiedRegistration() {
+    setIsRegistrationPopupOpen(true);
+  }
+
   function closeAllPopups() {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
+    setIsRegistrationPopupOpen(false);
     setSelectedCard(null);
   }
 
@@ -190,7 +197,10 @@ function App() {
                 </Route>
               </Switch>
 
-
+              <InfoTooltip
+                isOpen={isRegistrationPopupOpen}
+                onClose={closeAllPopups}
+                name="registration" />
 
               <ImagePopup
                 card={selectedCard}
