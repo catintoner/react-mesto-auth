@@ -1,13 +1,40 @@
 import React from "react";
 
-function Login() {
+import { withRouter } from "react-router-dom";
 
+function Login(props) {
 
+  const [email, setNewEmail] = React.useState("");
+  const [password, setNewPassword] = React.useState("");
+
+  function handleEmailChange(evt) {
+    setNewEmail(evt.target.value);
+  }
+
+  function handlePasswordChange(evt) {
+    setNewPassword(evt.target.value);
+  }
+
+  function handleDataSubmit(evt) {
+    evt.preventDefault();
+    props.auth.login(email, password)
+      .then(() => {
+          props.loggedIn(true);
+          props.history.push('/');
+
+      })
+      .catch((err) => {
+        props.autoNotifiedRegistration();
+        console.log(err);
+      })
+  }
 
   return (
     <form
       className="sign__container"
-      name="login-form">
+      name="login-form"
+      onSubmit={handleDataSubmit}
+      >
       <h3 className="sign__title">
         Вход
       </h3>
@@ -20,6 +47,8 @@ function Login() {
         placeholder="Email"
         required
         autoComplete="off"
+        value={email}
+        onChange={handleEmailChange}
       />
 
       <input
@@ -30,15 +59,17 @@ function Login() {
         placeholder="Пароль"
         required
         autoComplete="off"
+        value={password}
+        onChange={handlePasswordChange}
       />
 
       <button
-      className="sign__button-submit"
+        className="sign__button-submit"
         type="submit">
-          Войти
+        Войти
       </button>
     </form>
   )
 }
 
-export default Login;
+export default withRouter(Login);

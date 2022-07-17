@@ -20,6 +20,7 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { CurrentCardContext } from "../contexts/CurrentCardContext";
 
 import { api } from "../utils/Api";
+import { auth } from "../utils/Auth";
 
 function App() {
 
@@ -33,7 +34,7 @@ function App() {
   const [currentUser, setCurrentUser] = React.useState({ name: "", about: "", avatar: "" });
   const [cards, setCards] = React.useState([]);
 
-  const [loggedIn, setLoggedIn] = React.useState(true);
+  const [loggedIn, setLoggedIn] = React.useState(false);
 
   React.useEffect(() => {
     Promise.all([
@@ -193,14 +194,20 @@ function App() {
                   onTrashClick={handleCardDelete}
                   cards={cards}
                 >
+
                 </ProtectedRoute>
 
                 <Route path="/sign-in">
-                  <Login />
+                  <Login
+                    auth={auth}
+                    autoNotifiedRegistration={autoNotifiedRegistration}
+                    loggedIn={setLoggedIn} />
                 </Route>
 
                 <Route path="/sign-up">
-                  <Register />
+                  <Register
+                    auth={auth}
+                    autoNotifiedRegistration={autoNotifiedRegistration} />
                 </Route>
 
               </Switch>

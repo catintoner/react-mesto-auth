@@ -1,16 +1,41 @@
 import React from "react";
 
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
-function Register() {
+function Register(props) {
 
+  const [newEmail, setNewEmail] = React.useState("");
+  const [newPassword, setNewPassword] = React.useState("");
 
+  function handleEmailChange(evt) {
+    setNewEmail(evt.target.value);
+  }
+
+  function handlePasswordChange(evt) {
+    setNewPassword(evt.target.value);
+  }
+
+  function handleDataSubmit(evt) {
+    evt.preventDefault();
+    props.auth.registration(newEmail, newPassword)
+      .then((res) => {
+        if (res) {
+          props.history.push('/sign-in');
+        }
+      })
+      .catch((err) => {
+        props.autoNotifiedRegistration();
+        console.log(err);
+      })
+  }
 
   return (
     <>
       <form
         className="sign__container"
-        name="login-form">
+        name="login-form"
+        onSubmit={handleDataSubmit}
+      >
         <h3 className="sign__title">
           Регистрация
         </h3>
@@ -23,6 +48,8 @@ function Register() {
           placeholder="Email"
           required
           autoComplete="off"
+          value={newEmail}
+          onChange={handleEmailChange}
         />
 
         <input
@@ -33,6 +60,8 @@ function Register() {
           placeholder="Пароль"
           required
           autoComplete="off"
+          value={newPassword}
+          onChange={handlePasswordChange}
         />
 
         <button
@@ -54,4 +83,4 @@ function Register() {
 }
 
 
-export default Register;
+export default withRouter(Register);
