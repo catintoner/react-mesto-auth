@@ -25,6 +25,15 @@ function InfoTooltip(props) {
     }
   }, [props.isOpen]);
 
+  function onCloseButton() {
+    if (props.registerSuccess) {
+      props.history.push("/sign-in");
+      props.onClose();
+      return;
+    }
+    props.onClose();
+  }
+
   return (
     <section
       className={`popup popup_type_${props.name} ${props.isOpen ? ("popup_opened") : ""}`}
@@ -32,7 +41,7 @@ function InfoTooltip(props) {
       <button
         className="popup__exit"
         type="button"
-        onClick={props.onClose}>
+        onClick={onCloseButton}>
       </button>
       <div
         className="popup__container">

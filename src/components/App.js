@@ -1,19 +1,19 @@
 import React from "react";
 
-import { BrowserRouter, Route, Switch, useHistory, withRouter } from "react-router-dom";
+import { Route, Switch, useHistory, withRouter } from "react-router-dom";
 
-import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
+
+import Login from "./Login";
+import Register from "./Register";
 
 import ImagePopup from "./ImagePopup";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
-
-import Login from "./Login";
-import Register from "./Register";
 import InfoTooltip from "./InfoTooltip";
+
 import ProtectedRoute from "./ProtectedRoute";
 
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
@@ -23,6 +23,8 @@ import { api } from "../utils/Api";
 import { auth } from "../utils/Auth";
 
 function App() {
+
+  const history = useHistory();
 
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
@@ -37,15 +39,17 @@ function App() {
 
   const [registerSuccess, setRegisterSuccess] = React.useState(null);
   const [loggedIn, setLoggedIn] = React.useState(null);
+
   const [email, setEmail] = React.useState("");
 
-  const history = useHistory();
+
 
   React.useEffect(() => {
     Promise.all([
       api.getUserInfo(),
       api.getInitialCards()
     ])
+
       .then(([userInfo, cards]) => {
         setCurrentUser(userInfo);
         setCards(cards);
@@ -55,6 +59,10 @@ function App() {
         console.log(err);
       })
   }, []);
+
+  React.useEffect(() => {
+    handleCheckToken();
+  }, [loggedIn, handleCheckToken])
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -95,6 +103,7 @@ function App() {
 
   function handleUpdateUser(userData) {
     api.setUserInfo(userData)
+
       .then((newUserInfo) => {
         setCurrentUser(newUserInfo);
         closeAllPopups();
@@ -107,6 +116,7 @@ function App() {
 
   function handleUpdateAvatar(avatarLink) {
     api.editAvatar(avatarLink)
+
       .then((newUserInfo) => {
         setCurrentUser(newUserInfo);
         closeAllPopups();
@@ -147,8 +157,11 @@ function App() {
 
     if (!isLiked) {
       api.addLike(card.cardId)
+
         .then((modifiedCard) => {
+
           onCardLike((state) => {
+
             return state.map(
               (c) => (
                 c._id === card.cardId ? modifiedCard : c
@@ -163,8 +176,11 @@ function App() {
     } else {
 
       api.removeLike(card.cardId)
+
         .then((modifiedCard) => {
+
           onCardLike((state) => {
+
             return state.map(
               (c) => (
                 c._id === card.cardId ? modifiedCard : c
@@ -181,20 +197,20 @@ function App() {
   function handleCheckToken() {
     if (localStorage.getItem("token")) {
       const token = localStorage.getItem("token");
+
       auth.checkToken(token)
+
         .then((res) => {
           setEmail(res.data.email);
           setLoggedIn(true);
           history.push("/");
         })
+
+        .catch((err) => {
+          console.log(err);
+        })
     }
   }
-
-  React.useEffect(() => {
-    handleCheckToken();
-  }, [loggedIn])
-
-
 
   function handleOutAccount() {
     localStorage.removeItem("token");
@@ -231,6 +247,7 @@ function App() {
                 <Login
                   auth={auth}
                   autoNotifiedRegistration={autoNotifiedRegistration}
+                  setRegisterSuccess={setRegisterSuccess}
                   setLoggedIn={setLoggedIn}
                   email={email}
                   loggedIn={loggedIn}

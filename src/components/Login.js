@@ -27,6 +27,7 @@ function Login(props) {
 
       })
       .catch((err) => {
+        props.setRegisterSuccess(false);
         props.autoNotifiedRegistration();
         console.log(err);
       })
