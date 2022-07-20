@@ -2,6 +2,8 @@ import React from "react";
 
 import { Link, withRouter } from "react-router-dom";
 
+import Header from "./Header";
+
 function Register(props) {
 
   const [newEmail, setNewEmail] = React.useState("");
@@ -20,10 +22,12 @@ function Register(props) {
     props.auth.registration(newEmail, newPassword)
       .then((res) => {
         if (res) {
-          props.history.push('/sign-in');
+          props.setRegisterSuccess(true);
+          props.autoNotifiedRegistration();
         }
       })
       .catch((err) => {
+        props.setRegisterSuccess(false);
         props.autoNotifiedRegistration();
         console.log(err);
       })
@@ -31,6 +35,14 @@ function Register(props) {
 
   return (
     <>
+      <Header
+        loggedIn={props.loggedIn}
+        email={props.email}
+        textButton="Войти"
+        redirect="/sign-in"
+      >
+
+      </Header>
       <form
         className="sign__container"
         name="login-form"

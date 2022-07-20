@@ -2,7 +2,10 @@ import React from "react";
 
 import { withRouter } from "react-router-dom";
 
+import Header from "./Header";
+
 function Login(props) {
+
 
   const [email, setNewEmail] = React.useState("");
   const [password, setNewPassword] = React.useState("");
@@ -19,8 +22,8 @@ function Login(props) {
     evt.preventDefault();
     props.auth.login(email, password)
       .then(() => {
-          props.loggedIn(true);
-          props.history.push('/');
+        props.setLoggedIn(true);
+        props.history.push('/');
 
       })
       .catch((err) => {
@@ -30,45 +33,55 @@ function Login(props) {
   }
 
   return (
-    <form
-      className="sign__container"
-      name="login-form"
-      onSubmit={handleDataSubmit}
+    <>
+      <Header
+        loggedIn={props.loggedIn}
+        email={props.email}
+        textButton="Регистрация"
+        redirect="/sign-up"
       >
-      <h3 className="sign__title">
-        Вход
-      </h3>
 
-      <input
-        className="sign__input"
-        id="login"
-        name="login"
-        type="email"
-        placeholder="Email"
-        required
-        autoComplete="off"
-        value={email}
-        onChange={handleEmailChange}
-      />
+      </Header>
+      <form
+        className="sign__container"
+        name="login-form"
+        onSubmit={handleDataSubmit}
+      >
+        <h3 className="sign__title">
+          Вход
+        </h3>
 
-      <input
-        className="sign__input"
-        id="password"
-        name="password"
-        type="password"
-        placeholder="Пароль"
-        required
-        autoComplete="off"
-        value={password}
-        onChange={handlePasswordChange}
-      />
+        <input
+          className="sign__input"
+          id="login"
+          name="login"
+          type="email"
+          placeholder="Email"
+          required
+          autoComplete="off"
+          value={email}
+          onChange={handleEmailChange}
+        />
 
-      <button
-        className="sign__button-submit"
-        type="submit">
-        Войти
-      </button>
-    </form>
+        <input
+          className="sign__input"
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Пароль"
+          required
+          autoComplete="off"
+          value={password}
+          onChange={handlePasswordChange}
+        />
+
+        <button
+          className="sign__button-submit"
+          type="submit">
+          Войти
+        </button>
+      </form>
+    </>
   )
 }
 

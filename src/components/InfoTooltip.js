@@ -1,4 +1,5 @@
 import React from "react";
+import { withRouter } from "react-router-dom";
 
 import Accept from "../images/Accept.svg";
 import NotAccept from "../images/Not_accept.svg";
@@ -8,7 +9,10 @@ function InfoTooltip(props) {
   React.useEffect(() => {
     if (props.isOpen) {
       function closeOnEsc(evt) {
-        if (evt.key === "Escape") {
+        if (evt.key === "Escape" && props.registerSuccess) {
+          props.history.push("/sign-in");
+          props.onClose();
+        } else {
           props.onClose();
         }
       }
@@ -34,16 +38,16 @@ function InfoTooltip(props) {
         className="popup__container">
         <img
           className="popup__registration-img"
-          src={Accept}
+          src={props.registerSuccess ? Accept : NotAccept}
           alt="Регистрация"
         />
         <h3
           className="popup__title popup__title_type_registration">
-            Вы успешно зарегистрировались!
+            {props.registerSuccess ? "Вы успешно зарегистрировались!" : "Что-то пошло не так! Попробуйте еще раз."}
           </h3>
       </div>
     </section>
   )
 }
 
-export default InfoTooltip;
+export default withRouter(InfoTooltip);

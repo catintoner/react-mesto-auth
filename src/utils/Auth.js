@@ -41,6 +41,18 @@ class Auth {
     }))
   }
 
+
+  checkToken(token) {
+    return fetch(`${this._baseUrl}/users/me`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    })
+
+    .then(this._checkResponse)
+  }
 }
 
 export const auth = new Auth({

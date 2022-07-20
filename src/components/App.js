@@ -1,6 +1,6 @@
 import React from "react";
 
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Switch, useHistory, withRouter } from "react-router-dom";
 
 import Header from "./Header";
 import Main from "./Main";
@@ -34,7 +34,12 @@ function App() {
   const [currentUser, setCurrentUser] = React.useState({ name: "", about: "", avatar: "" });
   const [cards, setCards] = React.useState([]);
 
-  const [loggedIn, setLoggedIn] = React.useState(false);
+
+  const [registerSuccess, setRegisterSuccess] = React.useState(null);
+  const [loggedIn, setLoggedIn] = React.useState(null);
+  const [email, setEmail] = React.useState("");
+
+  const history = useHistory();
 
   React.useEffect(() => {
     Promise.all([
@@ -173,83 +178,118 @@ function App() {
     }
   }
 
+  function handleCheckToken() {
+    if (localStorage.getItem("token")) {
+      const token = localStorage.getItem("token");
+      auth.checkToken(token)
+        .then((res) => {
+          setEmail(res.data.email);
+          setLoggedIn(true);
+          history.push("/");
+        })
+    }
+  }
+
+  React.useEffect(() => {
+    handleCheckToken();
+  }, [loggedIn])
+
+
+
+  function handleOutAccount() {
+    localStorage.removeItem("token");
+    setLoggedIn(false);
+  }
+
+
   return (
-    <BrowserRouter>
-      <CurrentUserContext.Provider value={currentUser}>
-        <CurrentCardContext.Provider value={cards}>
-          <div className="page">
-            <div className="container">
-              <Header />
-              <Switch>
+    <CurrentUserContext.Provider value={currentUser}>
+      <CurrentCardContext.Provider value={cards}>
+        <div className="page">
+          <div className="container">
 
-                <ProtectedRoute exact
-                  path="/"
+            <Switch>
+
+              <ProtectedRoute exact
+                path="/"
+                loggedIn={loggedIn}
+                component={Main}
+                onEditProfile={handleEditProfileClick}
+                onAddPlace={handleAddPlaceClick}
+                onEditAvatar={handleEditAvatarClick}
+                onCardClick={handleCardClick}
+                onCardLike={handleCardLike}
+                onTrashClick={handleCardDelete}
+                cards={cards}
+                email={email}
+                onSignOut={handleOutAccount}
+              >
+
+              </ProtectedRoute>
+
+              <Route path="/sign-in">
+                <Login
+                  auth={auth}
+                  autoNotifiedRegistration={autoNotifiedRegistration}
+                  setLoggedIn={setLoggedIn}
+                  email={email}
                   loggedIn={loggedIn}
-                  component={Main}
-                  onEditProfile={handleEditProfileClick}
-                  onAddPlace={handleAddPlaceClick}
-                  onEditAvatar={handleEditAvatarClick}
-                  onCardClick={handleCardClick}
-                  onCardLike={handleCardLike}
-                  onTrashClick={handleCardDelete}
-                  cards={cards}
-                >
+                />
+              </Route>
 
-                </ProtectedRoute>
+              <Route path="/sign-up">
+                <Register
+                  setRegisterSuccess={setRegisterSuccess}
+                  auth={auth}
+                  autoNotifiedRegistration={autoNotifiedRegistration}
+                  email={email}
+                  loggedIn={loggedIn}
 
-                <Route path="/sign-in">
-                  <Login
-                    auth={auth}
-                    autoNotifiedRegistration={autoNotifiedRegistration}
-                    loggedIn={setLoggedIn} />
-                </Route>
+                />
 
-                <Route path="/sign-up">
-                  <Register
-                    auth={auth}
-                    autoNotifiedRegistration={autoNotifiedRegistration} />
-                </Route>
+              </Route>
 
-              </Switch>
-              {loggedIn && <Footer />}
+            </Switch>
+            {loggedIn && <Footer />}
 
-              <InfoTooltip
-                isOpen={isRegistrationPopupOpen}
-                onClose={closeAllPopups}
-                name="registration" />
+            <InfoTooltip
+              loggedIn={loggedIn}
+              isOpen={isRegistrationPopupOpen}
+              onClose={closeAllPopups}
+              registerSuccess={registerSuccess}
+              name="registration" />
 
-              <ImagePopup
-                card={selectedCard}
-                onClose={closeAllPopups}
-              />
+            <ImagePopup
+              card={selectedCard}
+              onClose={closeAllPopups}
+            />
 
-              <EditProfilePopup
-                isOpen={isEditProfilePopupOpen}
-                onClose={closeAllPopups}
-                onUpdateUser={handleUpdateUser}
-              />
+            <EditProfilePopup
+              isOpen={isEditProfilePopupOpen}
+              onClose={closeAllPopups}
+              onUpdateUser={handleUpdateUser}
+            />
 
-              <EditAvatarPopup
-                isOpen={isEditAvatarPopupOpen}
-                onClose={closeAllPopups}
-                onUpdateAvatar={handleUpdateAvatar}
-              />
+            <EditAvatarPopup
+              isOpen={isEditAvatarPopupOpen}
+              onClose={closeAllPopups}
+              onUpdateAvatar={handleUpdateAvatar}
+            />
 
-              <AddPlacePopup
-                isOpen={isAddPlacePopupOpen}
-                onClose={closeAllPopups}
-                onAddPlace={handleAddPlace}
-              />
+            <AddPlacePopup
+              isOpen={isAddPlacePopupOpen}
+              onClose={closeAllPopups}
+              onAddPlace={handleAddPlace}
+            />
 
-            </div>
           </div>
-        </CurrentCardContext.Provider>
-      </CurrentUserContext.Provider>
-    </BrowserRouter>
+        </div>
+      </CurrentCardContext.Provider>
+    </CurrentUserContext.Provider>
   );
 }
 
-export default App;
+export default withRouter(App);
 
 {/* <section className="popup popup_type_delete-card">
 <button className="popup__exit" type="button">
