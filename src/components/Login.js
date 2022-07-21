@@ -6,7 +6,6 @@ import Header from "./Header";
 
 function Login(props) {
 
-
   const [email, setNewEmail] = React.useState("");
   const [password, setNewPassword] = React.useState("");
 
@@ -24,7 +23,6 @@ function Login(props) {
       .then(() => {
         props.setLoggedIn(true);
         props.history.push('/');
-
       })
       .catch((err) => {
         props.setRegisterSuccess(false);

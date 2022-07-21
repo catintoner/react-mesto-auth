@@ -36,7 +36,7 @@ function InfoTooltip(props) {
 
   return (
     <section
-      className={`popup popup_type_${props.name} ${props.isOpen ? ("popup_opened") : ""}`}
+      className={`popup popup_type_${props.name} ${props.isOpen && ("popup_opened")}`}
     >
       <button
         className="popup__exit"
@@ -52,7 +52,7 @@ function InfoTooltip(props) {
         />
         <h3
           className="popup__title popup__title_type_registration">
-            {props.registerSuccess ? "Вы успешно зарегистрировались!" : "Что-то пошло не так! Попробуйте еще раз."}
+            {props.registerSuccess ? props.popupTextAccept : props.popupTextError}
           </h3>
       </div>
     </section>

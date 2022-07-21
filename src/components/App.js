@@ -36,33 +36,31 @@ function App() {
   const [currentUser, setCurrentUser] = React.useState({ name: "", about: "", avatar: "" });
   const [cards, setCards] = React.useState([]);
 
-
   const [registerSuccess, setRegisterSuccess] = React.useState(null);
   const [loggedIn, setLoggedIn] = React.useState(null);
 
   const [email, setEmail] = React.useState("");
 
-
-
   React.useEffect(() => {
-    Promise.all([
-      api.getUserInfo(),
-      api.getInitialCards()
-    ])
 
-      .then(([userInfo, cards]) => {
-        setCurrentUser(userInfo);
-        setCards(cards);
-      })
-
-      .catch((err) => {
-        console.log(err);
-      })
-  }, []);
-
-  React.useEffect(() => {
     handleCheckToken();
-  }, [loggedIn, handleCheckToken])
+
+    if (loggedIn) {
+      Promise.all([
+        api.getUserInfo(),
+        api.getInitialCards()
+      ])
+
+        .then(([userInfo, cards]) => {
+          setCurrentUser(userInfo);
+          setCards(cards);
+        })
+
+        .catch((err) => {
+          console.log(err);
+        })
+    }
+  }, [loggedIn]);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -99,7 +97,6 @@ function App() {
   function onTrashClick(props) {
     setCards(props);
   }
-
 
   function handleUpdateUser(userData) {
     api.setUserInfo(userData)
@@ -195,8 +192,8 @@ function App() {
   }
 
   function handleCheckToken() {
+    const token = localStorage.getItem("token");
     if (localStorage.getItem("token")) {
-      const token = localStorage.getItem("token");
 
       auth.checkToken(token)
 
@@ -216,7 +213,6 @@ function App() {
     localStorage.removeItem("token");
     setLoggedIn(false);
   }
-
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -274,6 +270,8 @@ function App() {
               isOpen={isRegistrationPopupOpen}
               onClose={closeAllPopups}
               registerSuccess={registerSuccess}
+              popupTextAccept="Вы успешно зарегистрировались!"
+              popupTextError="Что-то пошло не так! Попробуйте еще раз."
               name="registration" />
 
             <ImagePopup
