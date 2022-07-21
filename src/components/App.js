@@ -214,6 +214,39 @@ function App() {
     setLoggedIn(false);
   }
 
+  function handleLoginSubmit(email, password) {
+    auth.login(email, password)
+
+      .then(() => {
+        setLoggedIn(true);
+        history.push('/');
+      })
+
+      .catch((err) => {
+        setRegisterSuccess(false);
+        autoNotifiedRegistration();
+        console.log(err);
+      })
+  }
+
+  function handleRegistrationSubmit(email, password) {
+    auth.registration(email, password)
+
+      .then((res) => {
+        if (res) {
+          setRegisterSuccess(true);
+          // autoNotifiedRegistration();
+          history.push('/sign-in');
+        }
+      })
+
+      .catch((err) => {
+        setRegisterSuccess(false);
+        autoNotifiedRegistration();
+        console.log(err);
+      })
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <CurrentCardContext.Provider value={cards}>
@@ -241,23 +274,17 @@ function App() {
 
               <Route path="/sign-in">
                 <Login
-                  auth={auth}
-                  autoNotifiedRegistration={autoNotifiedRegistration}
-                  setRegisterSuccess={setRegisterSuccess}
-                  setLoggedIn={setLoggedIn}
                   email={email}
                   loggedIn={loggedIn}
+                  handleLoginSubmit={handleLoginSubmit}
                 />
               </Route>
 
               <Route path="/sign-up">
                 <Register
-                  setRegisterSuccess={setRegisterSuccess}
-                  auth={auth}
-                  autoNotifiedRegistration={autoNotifiedRegistration}
                   email={email}
                   loggedIn={loggedIn}
-
+                  handleRegistrationSubmit={handleRegistrationSubmit}
                 />
 
               </Route>

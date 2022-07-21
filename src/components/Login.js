@@ -17,18 +17,9 @@ function Login(props) {
     setNewPassword(evt.target.value);
   }
 
-  function handleDataSubmit(evt) {
+  function handleSubmit(evt) {
     evt.preventDefault();
-    props.auth.login(email, password)
-      .then(() => {
-        props.setLoggedIn(true);
-        props.history.push('/');
-      })
-      .catch((err) => {
-        props.setRegisterSuccess(false);
-        props.autoNotifiedRegistration();
-        console.log(err);
-      })
+    props.handleLoginSubmit(email, password);
   }
 
   return (
@@ -44,7 +35,7 @@ function Login(props) {
       <form
         className="sign__container"
         name="login-form"
-        onSubmit={handleDataSubmit}
+        onSubmit={handleSubmit}
       >
         <h3 className="sign__title">
           Вход

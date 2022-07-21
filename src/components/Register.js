@@ -17,20 +17,9 @@ function Register(props) {
     setNewPassword(evt.target.value);
   }
 
-  function handleDataSubmit(evt) {
+  function handleSubmit(evt) {
     evt.preventDefault();
-    props.auth.registration(newEmail, newPassword)
-      .then((res) => {
-        if (res) {
-          props.setRegisterSuccess(true);
-          props.autoNotifiedRegistration();
-        }
-      })
-      .catch((err) => {
-        props.setRegisterSuccess(false);
-        props.autoNotifiedRegistration();
-        console.log(err);
-      })
+    props.handleRegistrationSubmit(newEmail, newPassword);
   }
 
   return (
@@ -46,7 +35,7 @@ function Register(props) {
       <form
         className="sign__container"
         name="login-form"
-        onSubmit={handleDataSubmit}
+        onSubmit={handleSubmit}
       >
         <h3 className="sign__title">
           Регистрация
